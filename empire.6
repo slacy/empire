@@ -1,0 +1,906 @@
+'\" t
+.\"     Title: Empire
+.\"    Author: [see the "AUTHORS" section]
+.\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
+.\"      Date: 05/21/2014
+.\"    Manual: Games
+.\"    Source: empire
+.\"  Language: English
+.\"
+.TH "EMPIRE" "6" "05/21/2014" "empire" "Games"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+empire \- the wargame of the century
+.SH "SYNOPSIS"
+.HP \w'\fBempire\fR\ 'u
+\fBempire\fR [\-w\ \fIwater\fR] [\-s\ \fIsmooth\fR] [\-d\ \fIdelay\fR] [\-S\ \fIsave\-interval\fR] [\-f\ \fIsavefile\fR]
+.SH "DESCRIPTION"
+.PP
+Empire is a simulation of a full\-scale war between two emperors, the computer and you\&. Naturally, there is only room for one, so the object of the game is to destroy the other\&. The computer plays by the same rules that you do\&.
+.PP
+\fB\-w\fR\fIwater\fR
+.RS 4
+This option controls the amount of water on the map\&. This is given as the percentage of the map which should be water\&. The default is 70% water\&.
+\fIwater\fR
+must be an integer in the between 10 and 90 inclusive\&.
+.RE
+.PP
+\fB\-s\fR\fIsmooth\fR
+.RS 4
+This controls the smoothness of the map\&. A low value will produce a highly chaotic map with lots of small islands or lakes\&. A high value will produce a map with a few scattered continents\&. Be forewarned that a high value will cause the program to take a long time to start up\&. The default value is 5\&.
+.RE
+.PP
+\fB\-d\fR\fIdelay\fR
+.RS 4
+This option controls the length of time the computer will delay after printing informational messages at the top of the screen\&.
+\fIdelay\fR
+is specified in milliseconds\&. The default value is 2000 which allows the user two seconds to read a message\&.
+.RE
+.SH "EXAMPLES"
+.PP
+empire \-w90 \-s2
+.PP
+This produces a map with many islands\&.
+.PP
+empire \-w50 \-s0
+.PP
+This produces a really strange map\&. These values are not recommended for the faint at heart\&.
+.PP
+empire \-w10
+.PP
+This produces a map with lots of land and a few lakes\&. The computer will have a hard time on this sort of map as it will try and produce lots of troop transports, which are fairly useless\&.
+.PP
+There are two other option\&.
+.PP
+\fB\-S\fR\fIinterval\fR
+.RS 4
+sets the
+\fIsave interval\fR
+for the game (default is 10)\&. Once per
+\fIinterval\fR
+turns the game state will be automatically saved after your move\&. It will be saved in any case when you change modes or do various special things from command mode, such as `M\*(Aq or `N\*(Aq\&.
+.RE
+.PP
+\fB\-f\fR\fIsavefile\fR
+.RS 4
+Set the save file name (normally empsave\&.dat)\&.
+.RE
+.SH "INTRODUCTION"
+.PP
+Empire is a war game played between you and the computer\&. The world on which the game takes place is a square rectangle containing cities, land, and water\&. Cities are used to build armies, planes, and ships which can move across the world destroying enemy pieces, exploring, and capturing more cities\&. The objective of the game is to destroy all the enemy pieces, and capture all the cities\&.
+.PP
+The world is a rectangle 60 by 100 squares on a side\&. The world consists of sea (\&.), land (+), uncontrolled cities (*), computer\-controlled cities (X), and cities that you control (O)\&.
+.PP
+The world is displayed on the player\*(Aqs screen during movement\&. (On terminals with small screens, only a portion of the world is shown at any one time\&.) Each piece is represented by a unique character on the map\&. With a few exceptions, you can only have one piece on a given location\&. On the map, you are shown only the 8 squares adjacent to your units\&. This information is updated before and during each of your moves\&. The map displays the most recent information known\&.
+.PP
+The game starts by assigning you one city and the computer one city\&. Cities can produce new pieces\&. Every city that you own produces more pieces for you according to the cost of the desired piece\&. The typical play of the game is to issue the Automove command until you decide to do something special\&. During movement in each round, the player is prompted to move each piece that does not otherwise have an assigned function\&.
+.PP
+Map coordinates are 4\-digit numbers\&. The first two digits are the row, the second two digits are the column\&.
+.SH "PIECES"
+.PP
+The pieces are as follows:
+.TS
+allbox center tab(:);
+l c c r r r c
+l c c r r r c
+l c c r r r c
+l c c r r r c
+l c c r r r c
+l c c r r r c
+l c c r r r c
+l c c r r r c
+l c c r r r c
+l c c r r r c.
+T{
+Piece
+T}:T{
+You
+T}:T{
+Enemy
+T}:T{
+Moves
+T}:T{
+Hits
+T}:T{
+Str
+T}:T{
+Cost
+T}
+T{
+Army
+T}:T{
+A
+T}:T{
+a
+T}:T{
+1
+T}:T{
+1
+T}:T{
+1
+T}:T{
+5(6)
+T}
+T{
+Fighter
+T}:T{
+F
+T}:T{
+f
+T}:T{
+8
+T}:T{
+1
+T}:T{
+1
+T}:T{
+10(12)
+T}
+T{
+Patrol Boat
+T}:T{
+P
+T}:T{
+p
+T}:T{
+4
+T}:T{
+1
+T}:T{
+1
+T}:T{
+15(18)
+T}
+T{
+Destroyer
+T}:T{
+D
+T}:T{
+d
+T}:T{
+2
+T}:T{
+3
+T}:T{
+1
+T}:T{
+20(24)
+T}
+T{
+Submarine
+T}:T{
+S
+T}:T{
+s
+T}:T{
+2
+T}:T{
+2
+T}:T{
+3
+T}:T{
+20(24)
+T}
+T{
+Troop Transport
+T}:T{
+T
+T}:T{
+t
+T}:T{
+2
+T}:T{
+1
+T}:T{
+1
+T}:T{
+30(36)
+T}
+T{
+Aircraft Carrier
+T}:T{
+C
+T}:T{
+c
+T}:T{
+2
+T}:T{
+8
+T}:T{
+1
+T}:T{
+30(36)
+T}
+T{
+Battleship
+T}:T{
+B
+T}:T{
+b
+T}:T{
+2
+T}:T{
+10
+T}:T{
+2
+T}:T{
+40(48)
+T}
+T{
+Satellite
+T}:T{
+Z
+T}:T{
+z
+T}:T{
+10
+T}:T{
+\-\-
+T}:T{
+\-\-
+T}:T{
+50(60)
+T}
+.TE
+.sp 1
+.PP
+The second column shows the map representation for your units\&.
+.PP
+The third shows the representations of enemy units\&.
+.PP
+Moves is the number of squares that the unit can move in a single round\&.
+.PP
+Hits is the amount of damage a unit can take before it is destroyed\&.
+.PP
+Strength is the amount of damage a unit can inflict upon an enemy during each round of an attack\&.
+.PP
+Cost is the number of rounds needed for a city to produce the piece\&.
+.PP
+The number in parenthesis is the cost for a city to produce the first unit\&.
+.PP
+Each piece has certain advantages associated with it that can make it useful\&. One of the primary strategic aspects of this game is deciding which pieces will be produced and in what quantities\&.
+.PP
+\fBArmies\fR
+can only move on land, and are the only piece that can move on land\&. Only armies can capture cities\&. This means that you must produce armies in order to win the game\&. Armies have a 50% chance of capturing a city when they attack\&. (Attacking one\*(Aqs own city results in the army\*(Aqs destruction\&. Armies that move onto the sea will drown\&. Armies can attack objects at sea, but even if they win, they will drown\&.) Armies can be carried by troop transports\&. If an army is moved onto a troop transport, then whenever the transport is moved, the army will be moved with the transport\&. You cannot attack any piece at sea while on a transport\&.
+.PP
+\fBFighters\fR
+move over both land and sea, and they move 8 squares per round\&. Their high speed and great mobility make fighters ideal for exploring\&. However, fighters must periodically land at user\-owned cities for refueling\&. A fighter can travel 32 squares without refueling\&. Fighters are also shot down if they attempt to fly over a city which is not owned by the user\&.
+.PP
+\fBPatrol boats\fR
+are fast but lightly armored\&. Therefore they are useful for patrolling ocean waters and exploring\&. In an attack against a stronger boat, however, patrol boats will suffer heavy casualties\&.
+.PP
+\fBDestroyers\fR
+are fairly heavily armored and reasonably quick to produce\&. Thus they are useful for destroying enemy transports which may be trying to spread the enemy across the face of the world\&.
+.PP
+When a
+\fBsubmarine\fR
+scores a hit, 3 hits are exacted instead of 1\&. Thus submarines can inflict heavy damage in a fight against heavily armored boats\&. Notice that healthy submarines will typically defeat healthy destroyers two\-thirds of the time\&. However, a submarine will defeat a fighter about two\-thirds of the time, while a destroyer will defeat a fighter three\-fourths of the time\&.
+.PP
+\fBTroop transports\fR
+are the only pieces that can carry armies\&. A maximum of six armies can be carried by a transport\&. On any world containing a reasonable amount of water, transports will be a critical resource in winning the game\&. Notice that the weakness of transports implies they need protection from stronger ships\&.
+.PP
+\fBAircraft carriers\fR
+are the only ships that can carry fighters\&. Carriers carry a maximum of the number of hits left of fighters\&. Fighters are refueled when they land on a carrier\&.
+.PP
+\fBBattleships\fR
+are similar to destroyers except that they are much stronger\&.
+.PP
+\fBSatellites\fR
+are only useful for reconnaissance\&. They can not be attacked\&. They are launched in a random diagonal orbit, and stay up for 50 turns\&. They can see one square farther than other objects\&.
+.PP
+All ships can move only on the sea\&. Ships can also dock in a user\-owned city\&. Docked ships have damage repaired at the rate of 1 hit per turn\&. Ships which have suffered a lot of damage will move more slowly\&.
+.PP
+Because of their ability to be repaired, ships with lots of hits such as Carriers and Battleships have an additional advantage\&. After suffering minor damage while destroying enemy shipping, these ships can sail back to port and be quickly repaired before the enemy has time to replenish her destroyed shipping\&.
+.PP
+The following table gives the probability that the piece listed on the side will defeat the piece listed at the top in a battle\&. (The table assumes that both pieces are undamaged\&.)
+.TS
+allbox center tab(:);
+l c c c c c
+l c c c c c
+l c c c c c
+l c c c c c
+l c c c c c
+l c c c c c.
+T{
+AFPT
+T}:T{
+D
+T}:T{
+S
+T}:T{
+C
+T}:T{
+B
+T}:T{
+\ \&
+T}
+T{
+AFPT
+T}:T{
+50\&.0%
+T}:T{
+12\&.5%
+T}:T{
+25\&.0%
+T}:T{
+00\&.391%
+T}:T{
+00\&.0977%
+T}
+T{
+D
+T}:T{
+87\&.5%
+T}:T{
+50\&.0%
+T}:T{
+25\&.0%
+T}:T{
+05\&.47%
+T}:T{
+00\&.537%
+T}
+T{
+S
+T}:T{
+75\&.0%
+T}:T{
+75\&.0%
+T}:T{
+50\&.0%
+T}:T{
+31\&.3%
+T}:T{
+06\&.25%
+T}
+T{
+C
+T}:T{
+99\&.6%
+T}:T{
+94\&.5%
+T}:T{
+68\&.7%
+T}:T{
+50\&.0%
+T}:T{
+04\&.61%
+T}
+T{
+B
+T}:T{
+99\&.9%
+T}:T{
+99\&.5%
+T}:T{
+93\&.8%
+T}:T{
+95\&.4%
+T}:T{
+50\&.0%
+T}
+.TE
+.sp 1
+.PP
+Notice, however, that when a ship has been damaged, the odds of being defeated can go up quite a bit\&. For example, a healthy submarine has a 25% chance of defeating a battleship that has had one hit of damage done to it, and a healthy submarine has a 50% chance of defeating a carrier which has suffered two hits of damage\&.
+.SH "MOVEMENT FUNCTIONS"
+.PP
+There are a variety of movement functions\&. The movement functions of pieces can be specified in user mode and edit mode\&. Cities can have movement functions set for each type of piece\&. When a movement function for a type of pieces is set for a city, then every time that type of piece appears in the city, the piece will acquire that movement function\&. Be forewarned that moving loaded transports or loaded carriers into a city can have undesirable side effects\&.
+.PP
+Normally, when a movement function has been specified, the piece will continue moving according to that function until one of the following happen:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+An enemy piece or unowned city appears next to the piece\&. In this case the piece will be completely awoken, unless its movement function has been set to a specific destination\&. Armies on ships and pieces inside cities will not be awoken if the enemy piece is gone by the time it is their turn to move\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+You explicitly awaken the piece\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+The piece can no longer move in accordance with its programmed function\&. In this case, the piece will awaken
+\fItemporarily\fR\&. You will be asked to move the piece at which time you may awaken it\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+The piece is a fighter which has just enough fuel (plus a small reserve) to get to the nearest city\&. In this case, the piece will awaken completely, unless its movement function has been set to a specific destination, or its movement function has been set to
+\fIland\fR\&.
+.RE
+.PP
+The rationale behind this complexity is that fighters must be awoken completely before they are out of range of a city to prevent one from accidentally forgetting to waken the fighter and then watching it fly off to its doom\&. However, it is presumed that when a path is set for the fighter, the fighter is not in danger of running out of fuel\&.
+.PP
+Pieces do not completely awaken when their function has been set to a destination because it is slightly time consuming to reset the destination, but very simple (one keystroke) to wake the piece\&.
+.PP
+The movement functions are:
+.PP
+\fBAttack\fR
+.RS 4
+This function applies only to armies\&. When this function is set, the army will move toward the nearest enemy city, unowned city, or enemy army\&. This is useful when fighting off an invading enemy or taking over a new continent\&. When an army is set to this mode, it will also explore nearby territory\&. This tends to make the "grope" movement mode pretty useless\&.
+.RE
+.PP
+\fBAwake\fR
+.RS 4
+When pieces are awake, you will be asked for the direction in which the piece should move on each turn\&.
+.RE
+.PP
+\fBFill\fR
+.RS 4
+This function applies to carriers and transports\&. When this function is specified, these ships sleep until they have been filled with fighters or armies respectively\&.
+.RE
+.PP
+\fBGrope\fR
+.RS 4
+This function causes a piece to explore\&. The piece heads toward the nearest unseen square of the map on each of its moves\&. Some attempt is made to explore in an optimal fashion\&.
+.RE
+.PP
+\fBLand\fR
+.RS 4
+This function applies to fighters and causes the fighter to head toward the nearest transport or carrier\&.
+.RE
+.PP
+\fBRandom\fR
+.RS 4
+This movement function causes a piece to move at random to an adjacent empty square\&.
+.RE
+.PP
+\fBSentry\fR
+.RS 4
+This movement function puts a piece to sleep\&. The function of a city cannot be set to \*(Aqsleep\*(Aq\&.
+.RE
+.PP
+\fBTransport\fR
+.RS 4
+This movement function only works on armies\&. The army sleeps until an unfull transport passes by, at which point the army wakes up and boards the transport\&.
+.RE
+.PP
+\fBUpgrade\fR
+.RS 4
+This movement function only works with ships\&. The ship will move to the nearest owned city and remain there until it is repaired\&.
+.RE
+.PP
+\fB<dir>\fR
+.RS 4
+Pieces can be set to move in a specified direction\&.
+.RE
+.PP
+\fB<dest>\fR
+.RS 4
+Pieces can be set to move toward a specified square\&. In this movement mode, pieces take a shortest path toward the destination\&. Pieces moving in accordance with this function prefer diagonal moves that explore territory\&. Because of this, the movement of the piece may be non\-intuitive\&.
+.RE
+.PP
+As examples of how to use these movement functions, typically when I have a new city on a continent, I set the Army function of the city to
+\fIattack\fR\&. Whenever an army is produced, it merrily goes off on its way exploring the continent and moving towards unowned cities or enemy armies or cities\&.
+.PP
+I frequently set the ship functions for cities that are far from the front to automatically move ships towards the front\&.
+.PP
+When I have armies on a continent, but there is nothing to explore or attack, I move the army to the shore and use the
+\fItransport\fR
+function to have that army hop aboard the first passing transport\&.
+.SH "COMMANDS"
+.PP
+There are three command modes\&. The first of these is "command mode"\&. In this mode, you give commands that affect the game as a whole\&. In the second mode, "move mode", you give commands to move your pieces\&. The third mode is "edit mode", and in this mode you can edit the functions of your pieces and examine various portions of the map\&.
+.PP
+All commands are one character long\&. The full mnemonic names are listed below as a memorization aid\&. The mnemonics are somewhat contrived because there are so few characters in the English language\&. Too bad this program isn\*(Aqt written in Japanese, neh?
+.PP
+In all command modes, typing "H" will print out a screen of help information, and typing <ctrl\-L> will redraw the screen\&.
+.SH "COMMAND MODE"
+.PP
+In command mode, the computer will prompt you for your orders\&. The following commands can be given at this time:
+.PP
+\fBAutomove\fR
+.RS 4
+Enter automove mode\&. This command begins a new round of movement\&. You will remain in move mode after each of the computer\*(Aqs turns\&. (In move mode, the "O" command will return you to command mode after the computer finishes its next turn\&.
+.RE
+.PP
+\fBCity\fR
+.RS 4
+Give the computer a random unowned city\&. This command is useful if you find that the computer is getting too easy to beat\&.
+.RE
+.PP
+\fBDate\fR
+.RS 4
+The current round is displayed\&.
+.RE
+.PP
+\fBExamine\fR
+.RS 4
+Examine the enemy\*(Aqs map\&. This command is only valid after the computer has resigned\&.
+.RE
+.PP
+\fBFile\fR
+.RS 4
+Print a copy of the map to the specified file\&.
+.RE
+.PP
+\fBGive\fR
+.RS 4
+This command gives the computer a free move\&.
+.RE
+.PP
+\fBJ\fR
+.RS 4
+Enter edit mode where you can examine and change the functions associated with your pieces and cities\&.
+.RE
+.PP
+\fBMove\fR
+.RS 4
+Enter move mode for a single round\&.
+.RE
+.PP
+\fBN\fR
+.RS 4
+Give the computer the number of free moves you specify\&.
+.RE
+.PP
+\fBPrint\fR
+.RS 4
+Display a sector on the screen\&.
+.RE
+.PP
+\fBQuit\fR
+.RS 4
+Quit the game\&.
+.RE
+.PP
+\fBRestore\fR
+.RS 4
+Restore the game from empsave\&.dat\&.
+.RE
+.PP
+\fBSave\fR
+.RS 4
+Save the game in empsave\&.dat\&.
+.RE
+.PP
+\fBTrace\fR
+.RS 4
+This command toggles a flag\&. When the flag is set, after each move, either yours or the computer\*(Aqs, a picture of the world is written out to the file \*(Aqempmovie\&.dat\*(Aq\&.
+\fBWatch out! This command produces lots of output\&.\fR
+.RE
+.PP
+\fBWatch\fR
+.RS 4
+This command allows you to watch a saved movie\&. The movie is displayed in a condensed version so that it will fit on a single screen, so the output may be a little confusing\&. This command is only legal if the computer resigns\&. If you lose the game, you cannot replay a movie to learn the secrets of how the computer beat you\&. Nor can you replay a movie to find out the current positions of the computer\*(Aqs pieces\&. When replaying a movie, it is recommended that you use the
+\fB\-d\fR
+option to set the delay to around 2000 milliseconds or so\&. Otherwise the screen will be updated too quickly for you to really grasp what is going on\&.
+.RE
+.PP
+\fBZoom\fR
+.RS 4
+Display a condensed version of the map on the screen\&. The user map is divided into small rectangles\&. Each rectangle is displayed as one square on the screen\&. If there is a city in a rectangle, then it is displayed\&. Otherwise enemy pieces are displayed, then user pieces, then land, then water, and then unexplored territory\&. When pieces are displayed, ships are preferred to fighters and armies\&.
+.RE
+.SH "MOVE MODE"
+.PP
+In move mode, the cursor will appear on the screen at the position of each piece that needs to be moved\&. You can then give commands to move the piece\&. Directions to move are specified by the following keys:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\fI
+        QWE
+        A D
+        ZXC
+\fR
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+The arrow and keypad keys on your terminal, if any, should also work\&.
+.PP
+These keys move in the direction of the key from S\&. The characters are not echoed and only 1 character is accepted, so there is no need for a <Return>\&. Hit the <Space> bar if you want the piece to stay put\&.
+.PP
+Other commands are:
+.PP
+\fBBuild\fR
+.RS 4
+Change the production of a city\&.
+.RE
+.PP
+\fBFill\fR
+.RS 4
+Set the function of a troop transport or aircraft carrier to
+\fIfill\fR\&.
+.RE
+.PP
+\fBGrope\fR
+.RS 4
+Set the function of a piece to
+\fIgrope\fR\&.
+.RE
+.PP
+\fBI\fR\fIdir\fR
+.RS 4
+Set the direction for a piece to move\&.
+.RE
+.PP
+\fBJ\fR
+.RS 4
+Enter edit mode\&.
+.RE
+.PP
+\fBKill\fR
+.RS 4
+Wake up the piece\&. If the piece is a transport or carrier, pieces on board will not be awoken\&.
+.RE
+.PP
+\fBLand\fR
+.RS 4
+Set a fighter\*(Aqs function to
+\fIland\fR\&.
+.RE
+.PP
+\fBOut\fR
+.RS 4
+Cancel automove mode\&. At the end of the round, you will be placed in command mode\&.
+.RE
+.PP
+\fBPrint\fR
+.RS 4
+Redraw the screen\&.
+.RE
+.PP
+\fBRandom\fR
+.RS 4
+Set a piece\*(Aqs function to
+\fIrandom\fR\&.
+.RE
+.PP
+\fBSentry\fR
+.RS 4
+Set a piece\*(Aqs function to
+\fIsentry\fR\&.
+.RE
+.PP
+\fBTransport\fR
+.RS 4
+Set an army\*(Aqs function to
+\fItransport\fR\&.
+.RE
+.PP
+\fBUpgrade\fR
+.RS 4
+Set a ship\*(Aqs function to
+\fIupgrade\fR\&.
+.RE
+.PP
+\fBV\fR\fIpiece func\fR
+.RS 4
+Set the city movement function for the specified piece to the specified function\&. For example, typing "VAY" would set the city movement function for armies to
+\fIattack\fR\&. Whenever an army is produced in the city (or whenever a loaded transport enters the city), the army\*(Aqs movement function would be set to
+\fIattack\fR\&.
+.RE
+.PP
+\fBY\fR
+.RS 4
+Set an army\*(Aqs function to
+\fIattack\fR\&.
+.RE
+.PP
+\fB?\fR
+.RS 4
+Display information about the piece\&. The function, hits left, range, and number of items on board are displayed\&.
+.RE
+.PP
+Attacking something is accomplished by moving onto the square of the unit you wish to attack\&. Hits are traded off at 50% probability of a hit landing on one or the other units until one unit is totally destroyed\&. There is only 1 possible winner\&.
+.PP
+You are "allowed" to do
+\fBfatal\fR
+things like attack your own cities or other pieces\&. If you try to make a fatal move, the computer will warn you and give you a chance to change your mind\&.
+.PP
+You cannot move onto the edge of the world\&.
+.SH "EDIT MODE"
+.PP
+In edit mode, you can move around the world and examine pieces or assign them new functions\&. To move the cursor around, use the standard direction keys\&. Other commands are:
+.PP
+\fBBuild\fR
+.RS 4
+Change the production of the city under the cursor\&. The program will prompt for the new production, and you should respond with the key corresponding to the letter of the piece that you want produced\&.
+.RE
+.PP
+\fBFill\fR
+.RS 4
+Set a transport\*(Aqs or carrier\*(Aqs function to
+\fIfill\fR\&.
+.RE
+.PP
+\fBGrope\fR
+.RS 4
+Set a piece\*(Aqs function to
+\fIgrope\fR\&.
+.RE
+.PP
+\fBI\fR\fIdir\fR
+.RS 4
+Set the function of a piece (or city) to the specified direction\&.
+.RE
+.PP
+\fBKill\fR
+.RS 4
+Wake all pieces at the current location\&. If the location is a city, the fighter path will also be canceled\&.
+.RE
+.PP
+\fBMark\fR
+.RS 4
+Select the piece or city at the current location\&. This command is used with the "N" command\&.
+.RE
+.PP
+\fBN\fR
+.RS 4
+Set the destination of the piece previously selected with the "M" command to the current square\&.
+.RE
+.PP
+\fBOut\fR
+.RS 4
+Exit edit mode\&.
+.RE
+.PP
+\fBPrint\fR\fIsector\fR
+.RS 4
+Display a new sector of the map\&. The map is divided into ten sectors of size 20 by 70\&. Sector zero is in the upper\-left corner of the map\&. Sector four is in the lower\-left corner of the map\&. Sector five is in the upper\-right corner, and sector nine is in the lower\-right corner\&.
+.RE
+.PP
+\fBRandom\fR
+.RS 4
+Set a piece to move randomly\&.
+.RE
+.PP
+\fBSentry\fR
+.RS 4
+Put a piece to sleep\&.
+.RE
+.PP
+\fBTransport\fR
+.RS 4
+Set an army\*(Aqs function to
+\fItransport\fR\&.
+.RE
+.PP
+\fBUpgrade\fR
+.RS 4
+Set a ship\*(Aqs function to
+\fIupgrade\fR\&.
+.RE
+.PP
+\fBV\fR\fIpiece func\fR
+.RS 4
+Set the city movement function for a piece\&.
+.RE
+.PP
+\fBY\fR
+.RS 4
+Set an army\*(Aqs function to
+\fIattack\fR\&.
+.RE
+.PP
+\fB?\fR
+.RS 4
+Display information about a piece or city\&. For a city, the production, time of completion of the next piece, movement functions, and the number of fighters and ships in the city are displayed\&.
+.RE
+.PP
+Note that you cannot directly affect anything inside a city with the editor\&.
+.SH "HINTS"
+.PP
+After you have played this game for a while, you will probably find that the computer is immensely easy to beat\&. Here are some ideas you can try that may make the game more interesting\&.
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Give the computer one or more extra cities before starting the game\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Try playing the game with a low smoothness value (try using the \-s2 or even \-s0 option)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+When starting the game, the program will ask you what difficulty level you want\&. Here "difficulty level" is a misnomer\&. To compute a difficulty level, the program looks at each continent and counts the number of cities on the continents\&. A high "difficulty level" gives the computer a large continent with many cities, while the user gets a small continent with few cities\&. A low "difficulty level" has the opposite effect\&. It may be the case that the computer will play better when the "difficulty level" is low\&. The reason for this is that the computer is forced to move armies to multiple continents early in the game\&.
+.RE
+.SH "HISTORY"
+.PP
+According to
+\m[blue]\fBA Brief History of Empire\fR\m[]\&\s-2\u[1]\d\s+2, the ancestral game was written by Walter Bright sometime in the early 1970s while he was a student at Caltech\&. A copy leaked out of Caltech and was ported to DEC\*(Aqs VAX/VMS from the TOPS\-10/20 FORTRAN sources available sometime around fall 1979\&. Craig Leres found the source code on a DECUS tape in 1983 and added support for different terminal types\&.
+.PP
+Ed James got hold of the sources at Berkeley and converted portions of the code to C, mostly to use curses for the screen handling\&. He published his modified sources on the net in December 1986\&. Because this game ran on VMS machines for so long, it has been known as VMS Empire\&.
+.PP
+In 1987 Chuck Simmons at Amdahl reverse\-engineered the program and wrote a version completely in C\&. In doing so, he modified the computer strategy, the commands, the piece types, many of the piece attributes, and the algorithm for creating maps\&.
+.PP
+The various versions of this game were ancestral to later and better\-known 4X (expand/explore/exploit/exterminate) games, including Civilization (1990) and Master of Orion (1993)\&.
+.PP
+In 1994 Eric Raymond colorized the game\&.
+.SH "FILES"
+.PP
+\fIempsave\&.dat\fR
+.RS 4
+holds a backup of the game\&. Whenever empire is run, it will reload any game in this file\&.
+.RE
+.PP
+\fIempmovie\&.dat\fR
+.RS 4
+holds a history of the game so that the game can be replayed as a "movie"\&.
+.RE
+.SH "BUGS"
+.PP
+No doubt numerous\&.
+.PP
+Satellites are not completely implemented\&. You should be able to move to a square that contains a satellite, but the program won\*(Aqt let you\&. Enemy satellites should not cause your pieces to awaken\&.
+.SH "AUTHORS"
+.PP
+Original game by Walter Bright\&. Support for different terminal types added by Craig Leres\&. Curses support added by Ed James\&. C/Unix version written by Chuck Simmons\&. Colorization by Eric S\&. Raymond\&. Probability table corrected by Michael Self\&.
+.SH "COPYLEFT"
+.PP
+Copyright (C) 1987, 1988 Chuck Simmons
+.PP
+See the file COPYING, distributed with empire, for restriction and warranty information\&.
+.SH "NOTES"
+.IP " 1." 4
+A Brief History of Empire
+.RS 4
+\%http://www.classicempire.com/history.html
+.RE

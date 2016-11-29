@@ -1,0 +1,85 @@
+/*
+ *    Copyright (C) 1987, 1988 Chuck Simmons
+ * 
+ * See the file COPYING, distributed with empire, for restriction
+ * and warranty information.
+ */
+
+C Empire Sources (now called vms-empire).
+
+A few notes on how to debug and modify this code.  This used to be
+part of the README.
+
+Organization:
+
+        empire.h   -- definitions of data structures
+        extern.h   -- definitions of global variables
+        data.c     -- constant data
+	main.c     -- option parsing
+        empire.c   -- main program loop and outermost command handler
+        usermove.c -- move the user's pieces
+        compmove.c -- move the computer's pieces
+        edit.c     -- handle the user's edit mode commands
+        game.c     -- saving, restoring, and initializing the game board
+        display.c  -- update the screen
+	term.c     -- deal with information area of screen
+        math.c     -- mathematical routines
+        object.c   -- routines for manipulating objects
+	attack.c   -- handle attacks between pieces
+	map.c      -- find paths for moving pieces
+	util.c     -- miscellaneous routines, especially I/O.
+
+Debugging notes:
+
+	From command mode, there are two special commands that
+	can be used to turn debugging mode on or off.  "++" turns
+	debugging mode on.  "+-" turns debugging mode off.
+
+	When debugging mode is turned on, the following commands are
+	available:
+
+	"#" -- display a sector of the computer's map.
+
+	"%" -- enter "movie" mode.  The computer continuously makes
+	       moves, and the computer's map is shown on the screen.
+	       This is useful for debugging the algorithm used by the
+	       computer when it makes a move.  Don't confuse this
+	       with saving a movie and replaying it.
+
+	"@" -- enable/disable "trace pathmap" mode.  If this command
+	       is followed by a "+", trace pathmap mode is enabled.
+	       If this command is followed by a "-", trace pathmap
+	       mode is disabled.  In this mode, every time a "pathmap"
+	       is created, it is displayed.  This is useful for
+	       debugging the subroutines that search for an optimal
+	       path along which to move a piece.
+
+	"$" -- enable/disable "print_debug".  This command is also
+	       followed by either a "+" or "-".  In this mode,
+	       various messages will be printed out at times which
+	       may indicate that something is being done non-optimally.
+
+	"&" -- enable/disable "print_vmap".  This command is followed
+	       by a char that specifies the type of vmap to be
+	       displayed.  Values are
+
+		"a" -- army load maps
+		"l" -- transport load maps
+		"u" -- transport unload maps
+		"s" -- ship maps
+		"i" -- pruned explore map
+
+	       Any other character disables the printing of vmaps.
+
+	The program will not provide any prompts for the debugging
+	commands.  If you make a mistake, the computer just beeps.
+
+	You can also replay a saved movie with the normal "W" command
+	when debugging mode is turned on.
+
+	Also, the -DDEBUG flag can be turned on to cause consistency
+	checking to be performed frequently on the internal database.
+	This consistency checking is fairly exhaustive and checks for
+	all sorts of screwed up pointers.  My measurements suggest
+	that consistency checking causes the program to run half
+	as fast.

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=VMS Empire
+GenericName=VMS Empire
+Comment=Simulation of a full-scale war between two emperors
+Icon=vms-empire
+Exec=vms-empire
+Type=Application
+Categories=Game;StrategyGame;
+Terminal=true

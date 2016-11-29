@@ -1,0 +1,19 @@
+		README for vms-empire
+
+VMS-Empire is a simulation of a full-scale war between two
+emperors, the computer and you.  Naturally, there is only
+room for one, so the object of the game is to destroy
+the other.  The computer plays by the same rules that you
+do.  This game is the ancestor of all the multiplayer 4X
+simulations out there, including Civilization and Master of Orion.
+
+This code originated under VMS but has been forward-ported to
+modern ANSI C.  It is known to run not only on Linux but
+also under Windows and Mac OS X; all you need is a local
+port of the curses library.
+
+The files HACKING and BUGS will be of interest if you intend
+to modify this code.
+
+The ancestral code was by Chuck Simmons <chuck@amdahl.com>.  Since
+around 1990 it has been maintained by Eric S. Raymond <esr@thyrsus.com>
