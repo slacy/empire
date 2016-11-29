@@ -1,6 +1,6 @@
 /*
  *    Copyright (C) 1987, 1988 Chuck Simmons
- * 
+ *
  * See the file COPYING, distributed with empire, for restriction
  * and warranty information.
  */
@@ -17,12 +17,13 @@ empire.h -- type and constant declarations
 
 typedef unsigned char uchar;
 
-typedef long loc_t;	/* represent a board location in 4-digit form */
+typedef long loc_t; /* represent a board location in 4-digit form */
 
-typedef long count_t;	/* for iterating over or counting board locations */
+typedef long count_t; /* for iterating over or counting board locations */
 
-#define ASSERT(x) if (!(x)) assert ("x", __FILE__, __LINE__);
-#define ABORT assert ("aborting", __FILE__, __LINE__)
+#define ASSERT(x) \
+  if (!(x)) assert("x", __FILE__, __LINE__);
+#define ABORT assert("aborting", __FILE__, __LINE__)
 
 /* directions one can move */
 #define NORTH 0
@@ -34,13 +35,13 @@ typedef long count_t;	/* for iterating over or counting board locations */
 #define WEST 6
 #define NORTHWEST 7
 
-#define NUMTOPS 3 /* number of lines at top of screen for messages */
+#define NUMTOPS 3  /* number of lines at top of screen for messages */
 #define NUMSIDES 6 /* number of lines at side of screen */
 
 /*
  * This used to be 80, and that was appropriate back when this game was
- * played on hardware terminals.  Nowadays it's almost certain to be running 
- * on a software terminal emulator that would have been considered 
+ * played on hardware terminals.  Nowadays it's almost certain to be running
+ * on a software terminal emulator that would have been considered
  * dizzyingly huge back in the day.  Memory is cheap, we'll leave some
  * headroom.
  */
@@ -62,17 +63,17 @@ typedef long count_t;	/* for iterating over or counting board locations */
 #define CARRIER 6
 #define BATTLESHIP 7
 #define SATELLITE 8
-#define NUM_OBJECTS 9 /* number of defined objects */
+#define NUM_OBJECTS 9       /* number of defined objects */
 #define NOPIECE ((char)255) /* a 'null' piece */
 
 #define LIST_SIZE 5000 /* max number of pieces on board */
 
 typedef struct city_info {
-	loc_t loc; /* location of city */
-	uchar owner; /* UNOWNED, USER, COMP */
-	long func[NUM_OBJECTS]; /* function for each object */
-	long work; /* units of work performed */
-	char prod; /* item being produced */
+  loc_t loc;              /* location of city */
+  uchar owner;            /* UNOWNED, USER, COMP */
+  long func[NUM_OBJECTS]; /* function for each object */
+  long work;              /* units of work performed */
+  char prod;              /* item being produced */
 } city_info_t;
 
 /*
@@ -80,9 +81,9 @@ Types of programmed movement.  Use negative numbers for special
 functions, use positive numbers to move toward a specific location.
 */
 
-#define NOFUNC -1	/* no programmed function */
-#define RANDOM -2	/* move randomly */
-#define SENTRY -3	/* sleep */
+#define NOFUNC -1       /* no programmed function */
+#define RANDOM -2       /* move randomly */
+#define SENTRY -3       /* sleep */
 #define FILL -4         /* fill transport */
 #define LAND -5         /* land fighter at city */
 #define EXPLORE -6      /* piece explores nearby */
@@ -107,61 +108,65 @@ functions, use positive numbers to move toward a specific location.
 Macro to convert a movement function into a direction.
 */
 
-#define MOVE_DIR(a) (-(a)+MOVE_N)
+#define MOVE_DIR(a) (-(a) + MOVE_N)
 
 /*
 Information we maintain about each piece.
 */
 
-typedef struct { /* ptrs for doubly linked list */
-	struct piece_info *next; /* pointer to next in list */
-	struct piece_info *prev; /* pointer to prev in list */
+typedef struct {           /* ptrs for doubly linked list */
+  struct piece_info *next; /* pointer to next in list */
+  struct piece_info *prev; /* pointer to prev in list */
 } link_t;
 
 typedef struct piece_info {
-	link_t piece_link; /* linked list of pieces of this type */
-	link_t loc_link; /* linked list of pieces at a location */
-	link_t cargo_link; /* linked list of cargo pieces */
-	int owner; /* owner of piece */
-	int type; /* type of piece */
-	loc_t loc; /* location of piece */
-	long func; /* programmed type of movement */
-	short hits; /* hits left */
-	int moved; /* moves made */
-	struct piece_info *ship; /* pointer to containing ship */
-	struct piece_info *cargo; /* pointer to cargo list */
-	short count; /* count of items on board */
-	short range; /* current range (if applicable) */
+  link_t piece_link;        /* linked list of pieces of this type */
+  link_t loc_link;          /* linked list of pieces at a location */
+  link_t cargo_link;        /* linked list of cargo pieces */
+  int owner;                /* owner of piece */
+  int type;                 /* type of piece */
+  loc_t loc;                /* location of piece */
+  long func;                /* programmed type of movement */
+  short hits;               /* hits left */
+  int moved;                /* moves made */
+  struct piece_info *ship;  /* pointer to containing ship */
+  struct piece_info *cargo; /* pointer to cargo list */
+  short count;              /* count of items on board */
+  short range;              /* current range (if applicable) */
 } piece_info_t;
 
 /*
 Macros to link and unlink an object from a doubly linked list.
 */
 
-#define LINK(head,obj,list) { \
-	obj->list.prev = NULL; \
-	obj->list.next = head; \
-	if (head) head->list.prev = obj; \
-	head = obj; \
-}
+#define LINK(head, obj, list)        \
+  {                                  \
+    obj->list.prev = NULL;           \
+    obj->list.next = head;           \
+    if (head) head->list.prev = obj; \
+    head = obj;                      \
+  }
 
-#define UNLINK(head,obj,list) { \
-	if (obj->list.next) \
-		obj->list.next->list.prev = obj->list.prev; \
-        if (obj->list.prev) \
-		obj->list.prev->list.next = obj->list.next; \
-        else head = obj->list.next; \
-	obj->list.next = NULL; /* encourage mem faults in buggy code */ \
-	obj->list.prev = NULL; \
-}
+#define UNLINK(head, obj, list)                                     \
+  {                                                                 \
+    if (obj->list.next) obj->list.next->list.prev = obj->list.prev; \
+    if (obj->list.prev)                                             \
+      obj->list.prev->list.next = obj->list.next;                   \
+    else                                                            \
+      head = obj->list.next;                                        \
+    obj->list.next = NULL; /* encourage mem faults in buggy code */ \
+    obj->list.prev = NULL;                                          \
+  }
 
 /* macros to set map and list of an object */
 #define MAP(owner) ((owner) == USER ? user_map : comp_map)
 #define LIST(owner) ((owner) == USER ? user_obj : comp_obj)
 
 /* macro to step through adjacent cells */
-#define FOR_ADJ(loc,new_loc,i) for (i=0; (i<8 ? new_loc=loc+dir_offset[i],1 : 0); i++)
-#define FOR_ADJ_ON(loc,new_loc,i) FOR_ADJ(loc,new_loc,i) if (map[new_loc].on_board)
+#define FOR_ADJ(loc, new_loc, i) \
+  for (i = 0; (i < 8 ? new_loc = loc + dir_offset[i], 1 : 0); i++)
+#define FOR_ADJ_ON(loc, new_loc, i) \
+  FOR_ADJ(loc, new_loc, i) if (map[new_loc].on_board)
 
 /*
 We maintain attributes for each piece.  Attributes are currently constant,
@@ -172,18 +177,18 @@ beginning of a game.
 #define INFINITY 10000000 /* a large number */
 
 typedef struct piece_attr {
-	char sname; /* eg 'C' */
-	char name[20]; /* eg "aircraft carrier" */
-	char nickname[20]; /* eg "carrier" */
-	char article[20]; /* eg "an aircraft carrier" */
-	char plural[20]; /* eg "aircraft carriers" */
-	char terrain[4]; /* terrain piece can pass over eg "." */
-	uchar build_time; /* time needed to build unit */
-	uchar strength; /* attack strength */
-	uchar max_hits; /* number of hits when completely repaired */
-	uchar speed; /* number of squares moved per turn */
-	uchar capacity; /* max objects that can be held */
-	long range; /* range of piece */
+  char sname;        /* eg 'C' */
+  char name[20];     /* eg "aircraft carrier" */
+  char nickname[20]; /* eg "carrier" */
+  char article[20];  /* eg "an aircraft carrier" */
+  char plural[20];   /* eg "aircraft carriers" */
+  char terrain[4];   /* terrain piece can pass over eg "." */
+  uchar build_time;  /* time needed to build unit */
+  uchar strength;    /* attack strength */
+  uchar max_hits;    /* number of hits when completely repaired */
+  uchar speed;       /* number of squares moved per turn */
+  uchar capacity;    /* max objects that can be held */
+  long range;        /* range of piece */
 } piece_attr_t;
 
 /*
@@ -207,23 +212,23 @@ You can change them and the code will adjust properly.
 #define NUM_CITY ((100 * (MAP_WIDTH + MAP_HEIGHT)) / 228)
 
 typedef struct real_map { /* a cell of the actual map */
-	char contents; /* MAP_LAND, MAP_SEA, or MAP_CITY */
-	bool on_board; /* TRUE iff on the board */
-	city_info_t *cityp; /* ptr to city at this location */
-	piece_info_t *objp; /* list of objects at this location */
+  char contents;          /* MAP_LAND, MAP_SEA, or MAP_CITY */
+  bool on_board;          /* TRUE iff on the board */
+  city_info_t *cityp;     /* ptr to city at this location */
+  piece_info_t *objp;     /* list of objects at this location */
 } real_map_t;
 
 typedef struct view_map { /* a cell of one player's world view */
-	char contents; /* MAP_LAND, MAP_SEA, MAP_CITY, 'A', 'a', etc */
-	long seen; /* date when last updated */
+  char contents;          /* MAP_LAND, MAP_SEA, MAP_CITY, 'A', 'a', etc */
+  long seen;              /* date when last updated */
 } view_map_t;
 
 /* Define information we maintain for a pathmap. */
 
 typedef struct {
-	int cost; /* total cost to get here */
-	int inc_cost; /* incremental cost to get here */
-	char terrain; /* T_LAND, T_WATER, T_UNKNOWN, T_PATH */
+  int cost;     /* total cost to get here */
+  int inc_cost; /* incremental cost to get here */
+  char terrain; /* T_LAND, T_WATER, T_UNKNOWN, T_PATH */
 } path_map_t;
 
 #define T_UNKNOWN 0
@@ -235,13 +240,13 @@ typedef struct {
 /* A record for counts we obtain when scanning a continent. */
 
 typedef struct {
-	int user_cities; /* number of user cities on continent */
-	int user_objects[NUM_OBJECTS];
-	int comp_cities;
-	int comp_objects[NUM_OBJECTS];
-	int size; /* size of continent in cells */
-	int unowned_cities; /* number of unowned cities */
-	int unexplored; /* unexplored territory */
+  int user_cities; /* number of user cities on continent */
+  int user_objects[NUM_OBJECTS];
+  int comp_cities;
+  int comp_objects[NUM_OBJECTS];
+  int size;           /* size of continent in cells */
+  int unowned_cities; /* number of unowned cities */
+  int unexplored;     /* unexplored territory */
 } scan_counts_t;
 
 /* Define useful constants for accessing sectors. */
@@ -249,15 +254,15 @@ typedef struct {
 #define SECTOR_ROWS 5 /* number of vertical sectors */
 #define SECTOR_COLS 2 /* number of horizontal sectors */
 #define NUM_SECTORS (SECTOR_ROWS * SECTOR_COLS) /* total sectors */
-#define ROWS_PER_SECTOR ((MAP_HEIGHT+SECTOR_ROWS-1)/SECTOR_ROWS)
-#define COLS_PER_SECTOR ((MAP_WIDTH+SECTOR_COLS-1)/SECTOR_COLS)
+#define ROWS_PER_SECTOR ((MAP_HEIGHT + SECTOR_ROWS - 1) / SECTOR_ROWS)
+#define COLS_PER_SECTOR ((MAP_WIDTH + SECTOR_COLS - 1) / SECTOR_COLS)
 
 /* Information we need for finding a path for moving a piece. */
 
 typedef struct {
-	char city_owner; /* char that represents home city */
-	char *objectives; /* list of objectives */
-	int weights[11]; /* weight of each objective */
+  char city_owner;  /* char that represents home city */
+  char *objectives; /* list of objectives */
+  int weights[11];  /* weight of each objective */
 } move_info_t;
 
 /* special weights */
@@ -266,14 +271,14 @@ typedef struct {
 /* List of cells in the perimeter of our searching for a path. */
 
 typedef struct {
-	long len; /* number of items in list */
-	long list[MAP_SIZE]; /* list of locations */
+  long len;            /* number of items in list */
+  long list[MAP_SIZE]; /* list of locations */
 } perimeter_t;
 
-enum win_t {no_win, wipeout_win, ratio_win};
+enum win_t { no_win, wipeout_win, ratio_win };
 
-#define MAP_LAND	'+'
-#define MAP_SEA 	'.'
-#define MAP_CITY	'*'
+#define MAP_LAND '+'
+#define MAP_SEA '.'
+#define MAP_CITY '*'
 
 /* end */
